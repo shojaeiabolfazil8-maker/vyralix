@@ -237,7 +237,45 @@ if (imageFile) {
     Download Video
   </a>
 </>)}
+<div
+  style={{
+    display: "flex",
+    gap: "20px",
+    marginTop: "40px",
+    flexWrap: "wrap",
+    justifyContent: "center",
+  }}
+>
+  <img
+    src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3"
+    style={{
+      width: "220px",
+      height: "320px",
+      objectFit: "cover",
+      borderRadius: "20px",
+    }}
+  />
 
+  <img
+    src="https://images.unsplash.com/photo-1522075469751-3a6694fb2f61"
+    style={{
+      width: "220px",
+      height: "320px",
+      objectFit: "cover",
+      borderRadius: "20px",
+    }}
+  />
+
+  <img
+    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+    style={{
+      width: "220px",
+      height: "320px",
+      objectFit: "cover",
+      borderRadius: "20px",
+    }}
+  />
+</div>
 </div>
     
 </div>
