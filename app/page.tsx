@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <main
       style={{
-        background: "#0f172a",
+        background: "#050505",
         color: "white",
         minHeight: "100vh",
         display: "flex",
@@ -21,6 +21,25 @@ export default function Home() {
         textAlign: "center",
       }}
     >
+    <div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    width: "1200px",
+    maxWidth: "95%",
+    marginBottom: "30px",
+  }}
+>
+  <h1 style={{ fontSize: "32px", fontWeight: "bold" }}>
+    Vyralix AI
+  </h1>
+
+  <div style={{ display: "flex", gap: "20px" }}>
+    <span>Gallery</span>
+    <span>Pricing</span>
+    <span>Login</span>
+  </div>
+</div>
       <h1 style={{ fontSize: "60px", marginBottom: "10px" }}>
         Vyralix
       </h1>
@@ -47,7 +66,8 @@ export default function Home() {
     border: "1px solid #334155",
     borderRadius: "20px",
     background: "#111827",
-    width: "500px",
+    width: "1200px",
+    maxWidth: "95%"
   }}
 >
   <input
