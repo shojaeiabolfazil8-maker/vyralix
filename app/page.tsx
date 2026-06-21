@@ -66,7 +66,7 @@ export default function Home() {
     border: "1px solid #334155",
     borderRadius: "20px",
     background: "#111827",
-    width: "1200px",
+    width: "500px",
     maxWidth: "95%"
   }}
 >
