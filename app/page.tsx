@@ -8,6 +8,7 @@ export default function Home() {
   const [prompt, setPrompt] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
   return (
     <main
       style={{
@@ -37,10 +38,12 @@ export default function Home() {
   <div style={{ display: "flex", gap: "20px" }}>
     <span>Gallery</span>
     <span>Pricing</span>
-    <span>Login</span>
+<span onClick={() => setShowLogin(true)}>
+  Login
+</span>
   </div>
 </div>
-      <h1 style={{ fontSize: "60px", marginBottom: "10px" }}>
+      <h1 style={{ fontSize: "80px", marginBottom: "10px" }}>
         Vyralix
       </h1>
 
@@ -66,7 +69,7 @@ export default function Home() {
     border: "1px solid #334155",
     borderRadius: "20px",
     background: "#111827",
-    width: "500px",
+    width: "900px",
     maxWidth: "95%"
   }}
 >
@@ -279,7 +282,61 @@ if (imageFile) {
 </div>
     
 </div>
-      
+      {showLogin && (
+  <div
+    style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      background: "rgba(0,0,0,0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        background: "#111827",
+        padding: "30px",
+        borderRadius: "20px",
+        width: "600px",
+      }}
+    >
+      <h2>Login</h2>
+
+      <input
+        placeholder="Email"
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginTop: "10px",
+        }}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginTop: "10px",
+        }}
+      />
+
+      <button
+        style={{
+          width: "100%",
+          marginTop: "20px",
+          padding: "12px",
+        }}
+      >
+        Login
+      </button>
+    </div>
+  </div>
+)}
     </main>
   );
 }
