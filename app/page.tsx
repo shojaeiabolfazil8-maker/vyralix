@@ -1,5 +1,7 @@
  "use client";
   import { useRef, useState} from "react";
+  import { ImageIcon, Tag, User } from "lucide-react";
+  
 export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [fileName, setFileName] = useState("");
@@ -9,6 +11,7 @@ export default function Home() {
   const [videoUrl, setVideoUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [showLogin, setShowLogin] = useState(false);
+  const [showRegister, setShowRegister] = useState(false);
   return (
     <main
       style={{
@@ -26,22 +29,81 @@ export default function Home() {
   style={{
     display: "flex",
     justifyContent: "space-between",
-    width: "1200px",
-    maxWidth: "95%",
+    width: "110%",
+    padding: "0 40px",
+    maxWidth: "100%",
     marginBottom: "30px",
   }}
 >
-  <h1 style={{ fontSize: "32px", fontWeight: "bold" }}>
+  <h1 style={{ fontSize: "28px", fontWeight: "bold" }}>
     Vyralix AI
   </h1>
 
-  <div style={{ display: "flex", gap: "20px" }}>
-    <span>Gallery</span>
-    <span>Pricing</span>
-<span onClick={() => setShowLogin(true)}>
-  Login
-</span>
-  </div>
+  <div style={{ display: "flex", gap: "8px", marginLeft: "auto"}}>
+
+  <span
+    style={{
+      padding: "6px 14px",
+      borderRadius: "16px",
+      fontSize: "14px",
+      background: "rgba(255,255,255,0.04)",
+      backdropFilter: "blur(12px)",
+      border: "1px solid rgba(255,255,255,0.15)",
+      cursor: "pointer",
+      transition: "0.2s ease",
+      display: "flex",
+      alignItems: "center",
+      gap: "6px",
+    }}
+  >
+    <>
+    <ImageIcon size={12} />
+    Gallery
+    </>
+  </span>
+
+  <span
+    style={{
+      padding: "8px 16px",
+      borderRadius: "12px",
+      background: "rgba(255,255,255,0.08)",
+      backdropFilter: "blur(8px)",
+      border: "1px solid rgba(255,255,255,0.15)",
+      cursor: "pointer",
+      transition: "0.2s ease",
+      display: "flex",
+      alignItems: "center",
+      gap: "6px",
+    }}
+  >
+    <>
+      <Tag size={12} />
+      Pricing
+    </>
+  </span>
+
+  <span
+    onClick={() => setShowLogin(true)}
+    style={{
+      padding: "8px 16px",
+      borderRadius: "12px",
+      background: "rgba(255,255,255,0.08)",
+      backdropFilter: "blur(8px)",
+      border: "1px solid rgba(255,255,255,0.15)",
+      cursor: "pointer",
+      transition: "0.2s ease",
+       display: "flex",
+      alignItems: "center",
+      gap: "6px",
+    }}
+  >
+    <>
+      <User size={12} />
+      Login
+    </>
+  </span>
+
+</div>
 </div>
       <h1 style={{ fontSize: "80px", marginBottom: "10px" }}>
         Vyralix
@@ -302,9 +364,163 @@ if (imageFile) {
         padding: "30px",
         borderRadius: "20px",
         width: "600px",
+        position: "relative",
       }}
     >
       <h2>Login</h2>
+      <button
+  onClick={() => setShowLogin(false)}
+  onMouseEnter={(e) => {
+  e.currentTarget.style.transform = "scale(1.2) translateY(-2px)";
+}}
+
+onMouseLeave={(e) => {
+  e.currentTarget.style.transform = "scale(1)";
+}}
+  style={{
+    position: "absolute",
+    top: "5px",
+    right: "15px",
+    background: "none",
+    border: "none",
+    color: "white",
+    fontSize: "22px",
+    cursor: "pointer",
+    transition: "0.2s ease",
+  }}
+>
+  ×
+</button>
+
+      <input
+        placeholder="Email"
+        style={{
+  width: "100%",
+  padding: "14px 16px",
+  marginTop: "10px",
+  borderRadius: "12px",
+  border: "1px solid rgba(255,255,255,0.15)",
+  background: "rgba(255,255,255,0.08)",
+  color: "white",
+  outline: "none",
+  fontSize: "15px",
+       }}
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        style={{
+  width: "100%",
+  padding: "14px 16px",
+  marginTop: "10px",
+  borderRadius: "12px",
+  border: "1px solid rgba(255,255,255,0.15)",
+  background: "rgba(255,255,255,0.08)",
+  color: "white",
+  outline: "none",
+  fontSize: "15px",
+       }}
+       />
+
+      <button
+        style={{
+  width: "100%",
+  marginTop: "20px",
+  padding: "14px",
+  borderRadius: "12px",
+  border: "none",
+  background: "linear-gradient(90deg,#60a5fa,#2563eb)",
+  color: "white",
+  fontWeight: "bold",
+  fontSize: "16px",
+  cursor: "pointer",
+      }}
+      >
+        Login
+      </button>
+      <p
+  style={{
+    marginTop: "15px",
+    textAlign: "center",
+    color: "#aaa",
+    fontSize: "14px",
+  }}
+>
+  Don't have an account?{" "}
+  <span
+    onClick={() => setShowRegister(true)}
+    style={{
+      color: "#60a5fa",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Register
+  </span>
+</p>
+    </div>
+  </div>
+)}
+{showRegister && (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.7)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      zIndex: 1000,
+    }}
+  >
+    <div
+      style={{
+        background: "#111827",
+        padding: "30px",
+        borderRadius: "20px",
+        width: "600px",
+        maxWidth: "95%",
+        position: "relative",
+      }}
+    >
+      <button
+        onClick={() => setShowRegister(false)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "15px",
+          background: "none",
+          border: "none",
+          color: "white",
+          fontSize: "22px",
+          cursor: "pointer",
+        }}
+      >
+        ×
+      </button>
+
+      <h2>Register</h2>
+
+      <input
+        placeholder="First Name"
+        style={{
+          width: "100%",
+          padding: "12px",
+          marginTop: "15px",
+          borderRadius: "10px",
+        }}
+      />
+
+<input
+  placeholder="Last Name"
+  style={{
+    width: "100%",
+    padding: "12px",
+    marginTop: "15px",
+    borderRadius: "10px",
+  }}
+/>
 
       <input
         placeholder="Email"
@@ -312,6 +528,7 @@ if (imageFile) {
           width: "100%",
           padding: "12px",
           marginTop: "10px",
+          borderRadius: "10px",
         }}
       />
 
@@ -322,6 +539,7 @@ if (imageFile) {
           width: "100%",
           padding: "12px",
           marginTop: "10px",
+          borderRadius: "10px",
         }}
       />
 
@@ -329,10 +547,17 @@ if (imageFile) {
         style={{
           width: "100%",
           marginTop: "20px",
-          padding: "12px",
+          padding: "14px",
+          borderRadius: "12px",
+          border: "none",
+          background:
+            "linear-gradient(90deg,#60a5fa,#2563eb)",
+          color: "white",
+          fontWeight: "bold",
+          cursor: "pointer",
         }}
       >
-        Login
+        Create Account
       </button>
     </div>
   </div>

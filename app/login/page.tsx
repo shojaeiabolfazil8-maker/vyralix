@@ -55,6 +55,25 @@ export default function LoginPage() {
         >
           Login
         </button>
+        <p
+  style={{
+    marginTop: "15px",
+    textAlign: "center",
+    color: "#aaa",
+    fontSize: "14px",
+  }}
+>
+  Don't have an account?{" "}
+  <span
+    style={{
+      color: "#60a5fa",
+      cursor: "pointer",
+      fontWeight: "bold",
+    }}
+  >
+    Register
+  </span>
+</p>
       </div>
     </main>
   );
