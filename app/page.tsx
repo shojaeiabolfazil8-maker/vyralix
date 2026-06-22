@@ -1,6 +1,7 @@
  "use client";
   import { useRef, useState} from "react";
   import { ImageIcon, Tag, User } from "lucide-react";
+  import { supabase } from "../lib/supabase";
   
 export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -12,6 +13,28 @@ export default function Home() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [showLogin, setShowLogin] = useState(false);
   const [showRegister, setShowRegister] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleRegister = async () => {
+  const { error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        first_name: firstName,
+        last_name: lastName,
+      },
+    },
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Account created!");
+  }
+};
   return (
     <main
       style={{
@@ -504,6 +527,9 @@ onMouseLeave={(e) => {
 
       <input
         placeholder="First Name"
+        value={firstName}
+        onChange={(e) => setFirstName(e.target.value)}
+        
         style={{
           width: "100%",
           padding: "12px",
@@ -514,7 +540,9 @@ onMouseLeave={(e) => {
 
 <input
   placeholder="Last Name"
-  style={{
+  value={lastName}
+   onChange={(e) => setLastName(e.target.value)}
+   style={{
     width: "100%",
     padding: "12px",
     marginTop: "15px",
@@ -524,6 +552,8 @@ onMouseLeave={(e) => {
 
       <input
         placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         style={{
           width: "100%",
           padding: "12px",
@@ -535,6 +565,8 @@ onMouseLeave={(e) => {
       <input
         type="password"
         placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         style={{
           width: "100%",
           padding: "12px",
@@ -544,6 +576,7 @@ onMouseLeave={(e) => {
       />
 
       <button
+        onClick={handleRegister}
         style={{
           width: "100%",
           marginTop: "20px",
