@@ -17,7 +17,19 @@ export default function Home() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleRegister = async () => {
+  const handleLogin = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Login successful!");
+  }
+};
+const handleRegister = async () => {
   const { error } = await supabase.auth.signUp({
     email,
     password,
@@ -417,6 +429,8 @@ onMouseLeave={(e) => {
 
       <input
         placeholder="Email"
+        value={"email"}
+        onChange={(e) => setEmail(e.target.value)}
         style={{
   width: "100%",
   padding: "14px 16px",
@@ -433,6 +447,8 @@ onMouseLeave={(e) => {
       <input
         type="password"
         placeholder="Password"
+        value={"password"}
+        onChange={(e) => setPassword(e.target.value)}
         style={{
   width: "100%",
   padding: "14px 16px",
@@ -447,6 +463,7 @@ onMouseLeave={(e) => {
        />
 
       <button
+      onClick={handleLogin}
         style={{
   width: "100%",
   marginTop: "20px",
