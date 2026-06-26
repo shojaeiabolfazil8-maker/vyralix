@@ -429,7 +429,7 @@ onMouseLeave={(e) => {
 
       <input
         placeholder="Email"
-        value={"email"}
+        value={email}
         onChange={(e) => setEmail(e.target.value)}
         style={{
   width: "100%",
@@ -447,7 +447,7 @@ onMouseLeave={(e) => {
       <input
         type="password"
         placeholder="Password"
-        value={"password"}
+        value={password}
         onChange={(e) => setPassword(e.target.value)}
         style={{
   width: "100%",
