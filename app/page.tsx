@@ -1,7 +1,9 @@
  "use client";
-  import { useRef, useState} from "react";
+  import { useEffect, useRef, useState} from "react";
   import { ImageIcon, Tag, User } from "lucide-react";
   import { supabase } from "../lib/supabase";
+  import Header from "@/components/Header";
+  import LoginModal from "@/components/LoginModal"; 
   
 export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -17,20 +19,18 @@ export default function Home() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+  const [user, setUser] = useState<any>(null);
 
-  if (error) {
-    alert(error.message);
-  } else {
-    alert("Login successful!");
-  }
-};
+useEffect(() => {
+  supabase.auth.getUser().then(({ data }) => {
+    setUser(data.user);
+  });
+}, []);
+
+ 
+
 const handleRegister = async () => {
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -44,6 +44,11 @@ const handleRegister = async () => {
   if (error) {
     alert(error.message);
   } else {
+    await supabase.from("profiles").insert({
+      id:data.user?.id,
+      email: data.user?.email,
+      free_videos: 3,
+    });
     alert("Account created!");
   }
 };
@@ -55,91 +60,16 @@ const handleRegister = async () => {
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         alignItems: "center",
         textAlign: "center",
       }}
     >
-    <div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    width: "110%",
-    padding: "0 40px",
-    maxWidth: "100%",
-    marginBottom: "30px",
-  }}
->
-  <h1 style={{ fontSize: "28px", fontWeight: "bold" }}>
-    Vyralix AI
-  </h1>
-
-  <div style={{ display: "flex", gap: "8px", marginLeft: "auto"}}>
-
-  <span
-    style={{
-      padding: "6px 14px",
-      borderRadius: "16px",
-      fontSize: "14px",
-      background: "rgba(255,255,255,0.04)",
-      backdropFilter: "blur(12px)",
-      border: "1px solid rgba(255,255,255,0.15)",
-      cursor: "pointer",
-      transition: "0.2s ease",
-      display: "flex",
-      alignItems: "center",
-      gap: "6px",
-    }}
-  >
-    <>
-    <ImageIcon size={12} />
-    Gallery
-    </>
-  </span>
-
-  <span
-    style={{
-      padding: "8px 16px",
-      borderRadius: "12px",
-      background: "rgba(255,255,255,0.08)",
-      backdropFilter: "blur(8px)",
-      border: "1px solid rgba(255,255,255,0.15)",
-      cursor: "pointer",
-      transition: "0.2s ease",
-      display: "flex",
-      alignItems: "center",
-      gap: "6px",
-    }}
-  >
-    <>
-      <Tag size={12} />
-      Pricing
-    </>
-  </span>
-
-  <span
-    onClick={() => setShowLogin(true)}
-    style={{
-      padding: "8px 16px",
-      borderRadius: "12px",
-      background: "rgba(255,255,255,0.08)",
-      backdropFilter: "blur(8px)",
-      border: "1px solid rgba(255,255,255,0.15)",
-      cursor: "pointer",
-      transition: "0.2s ease",
-       display: "flex",
-      alignItems: "center",
-      gap: "6px",
-    }}
-  >
-    <>
-      <User size={12} />
-      Login
-    </>
-  </span>
-
-</div>
-</div>
+   
+    <Header
+      user={user}
+      setShowLogin={setShowLogin}
+      /> 
       <h1 style={{ fontSize: "80px", marginBottom: "10px" }}>
         Vyralix
       </h1>
@@ -241,6 +171,28 @@ onChange={(e) => setPrompt(e.target.value)}
  <button
  onClick={async () => {
   try {
+    if (!user) {
+  const guestVideoCount = Number(localStorage.getItem("guestVideoCount") || "0");
+
+  if (guestVideoCount >= 1) {
+    alert("Free users can only generate one video. Please login.");
+    setShowLogin(true);
+    return;
+  }
+}
+let profile = null;
+if (user) {
+  const { data } = await supabase
+      .from("profiles")
+      .select("free_videos")
+      .eq("id", user.id)
+      .single();
+  profile = data;
+    if (!profile || profile.free_videos <= 0) {
+      alert("You have no free videos left.");
+      return;
+    }
+}
     setLoading(true);
     let imageUrl = null;
 
@@ -283,8 +235,25 @@ if (imageFile) {
     const data = await response.json();
 
     console.log(data);
+    console.log("NEW VIDEO URL:", data.videoUrl);
     if (data.videoUrl) {
       setVideoUrl(data.videoUrl);
+      console.log("STATE SHOULD UPDATE");
+      if (user) {
+        await supabase
+        .from("profiles")
+        .update({
+            free_videos: profile!.free_videos -1,
+        })
+        .eq("id", user.id);
+      }
+      if(!user) {
+        const guestVideoCount = Number(localStorage.getItem("guestVideoCount") || "0");
+        localStorage.setItem(
+            "guestVideoCount",
+            String(guestVideoCount + 1)
+        );
+      }
     }
   } catch (error) {
     console.error(error);
@@ -309,6 +278,7 @@ if (imageFile) {
 {videoUrl && (
   <>
   <video
+    key={videoUrl}
     controls
     style={{
       width: "100%",
@@ -379,129 +349,7 @@ if (imageFile) {
 </div>
     
 </div>
-      {showLogin && (
-  <div
-    style={{
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      background: "rgba(0,0,0,0.7)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-    }}
-  >
-    <div
-      style={{
-        background: "#111827",
-        padding: "30px",
-        borderRadius: "20px",
-        width: "600px",
-        position: "relative",
-      }}
-    >
-      <h2>Login</h2>
-      <button
-  onClick={() => setShowLogin(false)}
-  onMouseEnter={(e) => {
-  e.currentTarget.style.transform = "scale(1.2) translateY(-2px)";
-}}
-
-onMouseLeave={(e) => {
-  e.currentTarget.style.transform = "scale(1)";
-}}
-  style={{
-    position: "absolute",
-    top: "5px",
-    right: "15px",
-    background: "none",
-    border: "none",
-    color: "white",
-    fontSize: "22px",
-    cursor: "pointer",
-    transition: "0.2s ease",
-  }}
->
-  ×
-</button>
-
-      <input
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{
-  width: "100%",
-  padding: "14px 16px",
-  marginTop: "10px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.15)",
-  background: "rgba(255,255,255,0.08)",
-  color: "white",
-  outline: "none",
-  fontSize: "15px",
-       }}
-      />
-
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{
-  width: "100%",
-  padding: "14px 16px",
-  marginTop: "10px",
-  borderRadius: "12px",
-  border: "1px solid rgba(255,255,255,0.15)",
-  background: "rgba(255,255,255,0.08)",
-  color: "white",
-  outline: "none",
-  fontSize: "15px",
-       }}
-       />
-
-      <button
-      onClick={handleLogin}
-        style={{
-  width: "100%",
-  marginTop: "20px",
-  padding: "14px",
-  borderRadius: "12px",
-  border: "none",
-  background: "linear-gradient(90deg,#60a5fa,#2563eb)",
-  color: "white",
-  fontWeight: "bold",
-  fontSize: "16px",
-  cursor: "pointer",
-      }}
-      >
-        Login
-      </button>
-      <p
-  style={{
-    marginTop: "15px",
-    textAlign: "center",
-    color: "#aaa",
-    fontSize: "14px",
-  }}
->
-  Don't have an account?{" "}
-  <span
-    onClick={() => setShowRegister(true)}
-    style={{
-      color: "#60a5fa",
-      cursor: "pointer",
-      fontWeight: "bold",
-    }}
-  >
-    Register
-  </span>
-</p>
-    </div>
-  </div>
-)}
+      
 {showRegister && (
   <div
     style={{
@@ -612,6 +460,12 @@ onMouseLeave={(e) => {
     </div>
   </div>
 )}
+<LoginModal
+  showLogin={showLogin}
+  setShowLogin={setShowLogin}
+  showRegister={showRegister}
+  setShowRegister={setShowRegister}
+/>
     </main>
   );
 }
