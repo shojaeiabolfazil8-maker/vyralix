@@ -1,37 +1,29 @@
-import Replicate from "replicate";
+import * as fal  from "@fal-ai/serverless-client";
 import { NextResponse } from "next/server";
 
-const replicate = new Replicate({
-  auth: process.env.REPLICATE_API_TOKEN,
+fal.config({
+  credentials: process.env.FAL_KEY!,
 });
 
 export async function POST(req: Request) {
   try {
     const { prompt, image } = await req.json();
-    console.log(image);
 
-    console.log("Prompt received:", prompt);
-
-    const output = await replicate.run(
-      "kwaivgi/kling-v1.6-standard",
-      {
-        input: {
-          prompt,
-          start_image: image,
-        },
-      }
-    );
-
-    console.log("OUTPUT TYPE:", typeof output);
-    console.dir(output, { depth: null});
-    console.log("OUTPUT STRING:", String(output))
-
+    const result: any = await fal.subscribe("fal-ai/kling-video/v2.1/standard/image-to-video", {
+      input: {
+        prompt,
+        image_url: image,
+        duration: "5",
+        aspect_ratio: "16:9",
+      },
+    });
+    
     return NextResponse.json({
       success: true,
-      videoUrl: String(output),
+      videoUrl: result.video.url,
     });
   } catch (error) {
-    console.error("REPLICATE ERROR:", error);
+    console.error(error);
 
     return NextResponse.json(
       {
