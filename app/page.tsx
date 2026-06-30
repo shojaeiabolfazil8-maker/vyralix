@@ -1,6 +1,6 @@
  "use client";
   import { useEffect, useRef, useState} from "react";
-  import { ImageIcon, Tag, User } from "lucide-react";
+  import { ImageIcon, Tag, User, } from "lucide-react";
   import { supabase } from "../lib/supabase";
   import Header from "@/components/Header";
   import LoginModal from "@/components/LoginModal"; 
@@ -141,16 +141,66 @@ const handleRegister = async () => {
   </p>
 )}
 {preview && (
-  <img
-   src={preview}
-   alt="preview"
-   style={{
-    width: "250px",
-    borderRadius:"12px",
-    marginBottom:"15px",
-    objectFit:"cover",
-   }}
-  />
+  <div
+    style={{
+      position: "relative",
+      display: "inline-block",
+      marginBottom: "15px",
+    }}
+  >
+    <img
+      src={preview}
+      alt="preview"
+      style={{
+        width: "250px",
+        borderRadius: "20px",
+        objectFit: "cover",
+      }}
+    />
+
+    <button
+      onClick={() => {
+        setPreview("");
+        setImageFile(null);
+        setFileName("");
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
+      }}
+        
+      style={{
+        position: "absolute",
+        top: "-3px",
+        right: "-45px",
+        width: "36px",
+        height: "36px",
+        borderRadius: "50%",
+        border: "1px solid rgba(255,255,255,0.35)",
+        background: "white",
+        backdropFilter: "blur(20px)",
+        boxShadow: "0 8px 20px rgba(0,0,0,.25)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        transition: "all 0.25s ease",
+        color: "#111827",
+        cursor: "pointer",
+      }}
+      onMouseEnter={(e) => {
+  e.currentTarget.style.background = "#2563eb";
+  e.currentTarget.style.color = "white";
+  e.currentTarget.style.transform = "scale(1.08)";
+      }}
+      
+     onMouseLeave={(e) => {
+  e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+  e.currentTarget.style.color = "#111827";
+  e.currentTarget.style.transform = "scale(1)";
+      }}
+    >
+    ✕
+    </button>
+  </div>
 )}
 <textarea
 value={prompt}
