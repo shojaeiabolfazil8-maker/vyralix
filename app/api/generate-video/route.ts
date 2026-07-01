@@ -13,24 +13,28 @@ export async function POST(req: Request) {
 
 if (image) {
   result = await fal.subscribe(
-    "fal-ai/kling-video/v2.1/standard/image-to-video",
+    "fal-ai/ltx-2.3/image-to-video/fast",
     {
       input: {
         prompt,
         image_url: image,
-        duration: "5",
+        duration: 6,
         aspect_ratio: "16:9",
+        resolution: "1080p",
+        fps: 25,
       },
     }
   );
 } else {
   result = await fal.subscribe(
-    "fal-ai/kling-video/v2.1/master/text-to-video",
+    "fal-ai/ltx-2.3/text-to-video/fast",
     {
       input: {
         prompt,
-        duration: "5",
+        duration: 6,
         aspect_ratio: "16:9",
+        resolution: "1080p",
+        fps: 25,
       },
     }
   );
@@ -40,7 +44,8 @@ if (image) {
       success: true,
       videoUrl: result.video.url,
     });
-  } catch (error) {
+  } catch (error: any) {
+    console.dir(error.body, {depth: null, });
     console.error(error);
 
     return NextResponse.json(
