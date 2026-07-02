@@ -47,7 +47,7 @@ const handleRegister = async () => {
     await supabase.from("profiles").insert({
       id:data.user?.id,
       email: data.user?.email,
-      free_videos: 3,
+      credits: 2,
     });
     alert("Account created!");
   }
@@ -234,12 +234,12 @@ let profile = null;
 if (user) {
   const { data } = await supabase
       .from("profiles")
-      .select("free_videos")
+      .select("credits")
       .eq("id", user.id)
       .single();
   profile = data;
-    if (!profile || profile.free_videos <= 0) {
-      alert("You have no free videos left.");
+    if (!profile || profile.credits <= 0) {
+      alert("You don't have enough credits. upgrade your plan to continue.");
       return;
     }
 }
@@ -293,7 +293,7 @@ if (imageFile) {
         await supabase
         .from("profiles")
         .update({
-            free_videos: profile!.free_videos -1,
+            credits: profile!.credits -1,
         })
         .eq("id", user.id);
       }

@@ -49,7 +49,7 @@ const handleRegister = async () => {
     await supabase.from("profiles").insert({
       id:data.user.id,
       email:data.user.email,
-      free_videos: 3,
+      credits: 2,
     });
   }
   alert("Account created!");
